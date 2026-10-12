@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="SCHEDULE STUDENT - Nền tảng quản lý lịch trình, công việc thông minh với phân loại mức độ ưu tiên, ma trận Eisenhower và theo dõi tiến độ chi tiết.">
+  <title>SCHEDULE STUDENT - Quản Lý Lịch Trình & Công Việc Thông Minh</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <!-- Phosphor Icons (CDN) & Fallback SVG icons -->
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Background Ambient Glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- App Container -->
+  <div id="app" class="app-layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="ph-bold ph-calendar-check"></i>
+          </div>
+          <div class="logo-text">
+            <h2>Plan<span>Smart</span></h2>
+            <p>Quản lý lịch thông minh</p>
+          </div>
+        </div>
+        <button class="icon-btn mobile-close-btn" id="closeSidebarBtn" title="Đóng menu">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <!-- Quick Add Button -->
+      <div class="sidebar-action">
+        <button class="btn btn-primary btn-block add-task-btn" id="sidebarAddTaskBtn">
+          <i class="ph-bold ph-plus"></i>
+          <span>Thêm lịch / Việc</span>
+        </button>
+      </div>
+
+      <!-- Domain Navigation Block -->
+      <div class="sidebar-domain-block">
+        <div class="nav-group-title">Phân Vùng Quản Lý</div>
+        <div class="domain-nav-list">
+          <button class="domain-nav-btn active" data-domain="all" id="sideDomainAll">
+            <i class="ph ph-squares-four"></i>
+            <span>Tất cả lịch trình</span>
+            <span class="badge" id="badgeAllCount">0</span>
+          </button>
+          <button class="domain-nav-btn domain-study-item" data-domain="study" id="sideDomainStudy">
+            <i class="ph-bold ph-graduation-cap"></i>
+            <span>Lịch Học & Lớp Học</span>
+            <span class="badge badge-study" id="badgeStudyNav">0</span>
+          </button>
+          <button class="domain-nav-btn domain-work-item" data-domain="personal_work" id="sideDomainWork">
+            <i class="ph-bold ph-briefcase"></i>
+            <span>Việc Cá Nhân & Đời Sống</span>
+            <span class="badge badge-work" id="badgeWorkNav">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nav Items -->
+      <nav class="sidebar-nav">
+        <div class="nav-group-title">Điều hướng chính</div>
+        <button class="nav-item active" data-view="calendar" id="navCalendar">
+          <i class="ph ph-calendar"></i>
+          <span>Lịch trình</span>
+          <span class="badge" id="badgeTotalEvents">0</span>
+        </button>
+        <button class="nav-item" data-view="tasks" id="navTasks">
+          <i class="ph ph-check-square"></i>
+          <span>Danh sách công việc</span>
+          <span class="badge badge-warning" id="badgePendingTasks">0</span>
+        </button>
+        <button class="nav-item" data-view="smart-ai" id="navSmartAI">
+          <i class="ph-bold ph-sparkle"></i>
+          <span>Gợi ý ưu tiên AI</span>
+          <span class="badge badge-pulse">Mới</span>
+        </button>
+        <button class="nav-item" data-view="eisenhower" id="navEisenhower">
+          <i class="ph ph-grid-four"></i>
+          <span>Ma trận Eisenhower</span>
+        </button>
+        <button class="nav-item" data-view="analytics" id="navAnalytics">
+          <i class="ph ph-chart-line-up"></i>
+          <span>Tiến độ & Thống kê</span>
+        </button>
+
+        <div class="nav-group-title">Mức độ ưu tiên</div>
+        <div class="priority-filters">
+          <label class="priority-checkbox p1">
+            <input type="checkbox" checked value="p1" class="priority-filter-cb">
+            <span class="priority-dot p1-dot"></span>
+            <span class="priority-label">Khẩn cấp & Quan trọng (P1)</span>
+          </label>
+          <label class="priority-checkbox p2">
+            <input type="checkbox" checked value="p2" class="priority-filter-cb">
+            <span class="priority-dot p2-dot"></span>
+            <span class="priority-label">Quan trọng, ko gấp (P2)</span>
+          </label>
+          <label class="priority-checkbox p3">
+            <input type="checkbox" checked value="p3" class="priority-filter-cb">
+            <span class="priority-dot p3-dot"></span>
+            <span class="priority-label">Bình thường (P3)</span>
+          </label>
+          <label class="priority-checkbox p4">
+            <input type="checkbox" checked value="p4" class="priority-filter-cb">
+            <span class="priority-dot p4-dot"></span>
+            <span class="priority-label">Thấp (P4)</span>
+          </label>
+        </div>
+
+        <div class="nav-group-title">Danh mục</div>
+        <div class="category-list" id="categoryFilterList">
+          <!-- Populated dynamically -->
+        </div>
+      </nav>
+
+      <!-- Sidebar Mini Profile Footer -->
+      <div class="sidebar-footer">
+        <div class="user-mini-card" id="userMiniCard">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" class="user-avatar"
+            id="sidebarAvatar">
+          <div class="user-info">
+            <h4 class="user-name" id="sidebarUserName">Đang tải...</h4>
+            <p class="user-email" id="sidebarUserEmail">user@example.com</p>
+          </div>
+          <button class="icon-btn" id="openProfileMenuBtn" title="Hồ sơ cá nhân">
+            <i class="ph ph-gear"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+
+      <!-- Top Navigation Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-menu-btn" id="openSidebarBtn" title="Mở danh mục">
+            <i class="ph ph-list"></i>
+          </button>
+
+          <div class="search-box">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" id="globalSearchInput" placeholder="Tìm kiếm sự kiện, công việc, thẻ tags...">
+            <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
+              <i class="ph ph-x-circle"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Domain Segmented Control in Topbar -->
+        <div class="domain-segmented-control" id="domainSwitcher">
+          <button class="domain-pill-btn active" data-domain="all">
+            <i class="ph ph-squares-four"></i>
+            <span>Tất cả</span>
+          </button>
+          <button class="domain-pill-btn domain-study-pill" data-domain="study">
+            <i class="ph-bold ph-graduation-cap"></i>
+            <span>Lịch Học</span>
+            <span class="domain-badge-count" id="studyCountPill">0</span>
+          </button>
+          <button class="domain-pill-btn domain-work-pill" data-domain="personal_work">
+            <i class="ph-bold ph-briefcase"></i>
+            <span>Việc Cá Nhân</span>
+            <span class="domain-badge-count" id="personalCountPill">0</span>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Quick Status Indicator -->
+          <div class="productivity-indicator" id="topbarStreakPill" title="Chuỗi ngày tích cực">
+            <i class="ph-fill ph-fire streak-fire"></i>
+            <span id="streakCount">5</span> ngày liên tục
+          </div>
+
+          <!-- Theme Toggle -->
+          <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" title="Đổi giao diện Sáng / Tối">
+            <i class="ph ph-moon" id="themeIcon"></i>
+          </button>
+
+          <!-- Notifications Bell with Dropdown -->
+          <div class="user-dropdown-wrapper" id="notifDropdownWrapper">
+            <button class="icon-btn notif-bell-btn" id="notifBellBtn" title="Thông báo nhắc nhở đến hẹn">
+              <i class="ph ph-bell" id="notifBellIcon"></i>
+              <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+            </button>
+
+            <!-- Notifications Dropdown Menu -->
+            <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+              <div class="notif-dropdown-header">
+                <div>
+                  <h4>Nhắc Nhở & Thông Báo</h4>
+                  <p class="notif-subtitle">Công việc sắp tới & đến hạn</p>
+                </div>
+                <div class="notif-header-actions">
+                  <button class="text-btn" id="btnMarkNotifsRead" title="Đánh dấu tất cả đã đọc">
+                    <i class="ph ph-checks"></i> Đã đọc
+                  </button>
+                  <button class="text-btn text-danger" id="btnClearNotifs" title="Xóa tất cả thông báo">
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick Action Bar in Dropdown -->
+              <div class="notif-utility-bar">
+                <button class="btn btn-outline btn-xs" id="btnRequestNotifPermission">
+                  <i class="ph-bold ph-bell-simple"></i>
+                  <span>Bật thông báo màn hình</span>
+                </button>
+                <button class="btn btn-secondary btn-xs" id="btnTestAlarm" title="Thử nghiệm chuông báo đến hẹn">
+                  <i class="ph-bold ph-play"></i>
+                  <span>Thử chuông</span>
+                </button>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <!-- Notification items list -->
+              <div class="notif-items-list" id="notifListContainer">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <!-- Empty state -->
+              <div class="notif-empty-state" id="notifEmptyState">
+                <i class="ph-duotone ph-bell-slash"></i>
+                <p>Không có thông báo mới</p>
+                <span>Hệ thống sẽ tự động rung chuông khi có việc đến hẹn.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Sort By Priority Button -->
+          <button class="btn btn-outline btn-sm smart-sort-btn" id="topbarSmartSortBtn"
+            title="Sắp xếp thông minh theo điểm ưu tiên">
+            <i class="ph-bold ph-magic-wand"></i>
+            <span class="btn-text">Gợi ý sắp xếp</span>
+          </button>
+
+          <!-- User Account Actions -->
+          <div class="account-actions">
+            <!-- When Logged In -->
+            <div class="user-dropdown-wrapper" id="authLoggedIn">
+              <button class="profile-trigger-btn" id="topbarProfileBtn">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" id="topbarAvatar"
+                  class="avatar-sm">
+                <span class="username-display" id="topbarUserName">Alex</span>
+                <i class="ph ph-caret-down"></i>
+              </button>
+
+              <!-- Profile Dropdown Menu -->
+              <div class="dropdown-menu profile-dropdown" id="profileDropdown">
+                <div class="dropdown-header">
+                  <p class="dropdown-user-name" id="dropdownUserName">Alex Smith</p>
+                  <p class="dropdown-user-email" id="dropdownUserEmail">alex@example.com</p>
+                </div>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" id="dropdownOpenProfile">
+                  <i class="ph ph-user"></i>
+                  <span>Quản lý hồ sơ</span>
+                </button>
+                <button class="dropdown-item" id="dropdownBackup">
+                  <i class="ph ph-download-simple"></i>
+                  <span>Sao lưu / Xuất dữ liệu</span>
+                </button>
+                <button class="dropdown-item" id="dropdownResetDemo">
+                  <i class="ph ph-arrows-counter-clockwise"></i>
+                  <span>Nạp dữ liệu mẫu</span>
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item text-danger" id="dropdownLogout">
+                  <i class="ph ph-sign-out"></i>
+                  <span>Đăng xuất</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- When Logged Out -->
+            <div class="auth-buttons" id="authLoggedOut" style="display: none;">
+              <button class="btn btn-outline btn-sm" id="btnOpenLogin">Đăng nhập</button>
+              <button class="btn btn-primary btn-sm" id="btnOpenRegister">Đăng ký</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="content-scroll">
+
+        <!-- ============================================== -->
+        <!-- VIEW 1: CALENDAR VIEW (LỊCH TRÌNH)             -->
+        <!-- ============================================== -->
+        <section class="app-view active" id="viewCalendar">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 class="view-title">Lịch Trình Cá Nhân</h1>
+              <p class="view-subtitle">Theo dõi sự kiện, cuộc hẹn và công việc theo ngày, tuần, tháng</p>
+            </div>
+
+            <!-- Calendar Navigation & View Toggle -->
+            <div class="calendar-controls">
+              <div class="calendar-nav-buttons">
+                <button class="icon-btn" id="calPrevBtn" title="Tháng trước">
+                  <i class="ph ph-caret-left"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" id="calTodayBtn">Hôm nay</button>
+                <button class="icon-btn" id="calNextBtn" title="Tháng sau">
+                  <i class="ph ph-caret-right"></i>
+                </button>
+              </div>
+
+              <h2 class="calendar-current-label" id="calCurrentMonthYear">Tháng 10, 2026</h2>
+
+              <div class="view-mode-selector">
+                <button class="mode-btn active" data-mode="month" id="calModeMonth">Tháng</button>
+                <button class="mode-btn" data-mode="week" id="calModeWeek">Tuần</button>
+                <button class="mode-btn" data-mode="day" id="calModeDay">Ngày</button>
+              </div>
+
+              <button class="btn btn-primary btn-sm" id="btnQuickAddCal">
+                <i class="ph-bold ph-plus"></i>
+                <span>Thêm sự kiện</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Calendar View Body -->
+          <div class="calendar-container">
+            <!-- Month Grid View -->
+            <div class="month-view" id="monthViewWrapper">
+              <div class="weekday-header">
+                <div class="weekday">Thứ 2</div>
+                <div class="weekday">Thứ 3</div>
+                <div class="weekday">Thứ 4</div>
+                <div class="weekday">Thứ 5</div>
+                <div class="weekday">Thứ 6</div>
+                <div class="weekday weekend">Thứ 7</div>
+                <div class="weekday weekend">Chủ Nhật</div>
+              </div>
+              <div class="calendar-grid" id="calendarGrid">
+                <!-- Days populated dynamically by JS -->
+              </div>
+            </div>
+
+            <!-- Week View -->
+            <div class="week-view" id="weekViewWrapper" style="display: none;">
+              <div class="week-header-grid" id="weekHeaderGrid">
+                <!-- Day columns headers populated dynamically -->
+              </div>
+              <div class="week-timeline-scroll">
+                <div class="week-time-col">
+                  <!-- Hour markers 00:00 to 23:00 -->
+                  <div class="time-slot-label">07:00</div>
+                  <div class="time-slot-label">08:00</div>
+                  <div class="time-slot-label">09:00</div>
+                  <div class="time-slot-label">10:00</div>
+                  <div class="time-slot-label">11:00</div>
+                  <div class="time-slot-label">12:00</div>
+                  <div class="time-slot-label">13:00</div>
+                  <div class="time-slot-label">14:00</div>
+                  <div class="time-slot-label">15:00</div>
+                  <div class="time-slot-label">16:00</div>
+                  <div class="time-slot-label">17:00</div>
+                  <div class="time-slot-label">18:00</div>
+                  <div class="time-slot-label">19:00</div>
+                  <div class="time-slot-label">20:00</div>
+                  <div class="time-slot-label">21:00</div>
+                  <div class="time-slot-label">22:00</div>
+                </div>
+                <div class="week-grid-columns" id="weekColumnsContainer">
+                  <!-- Week columns populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Day View -->
+            <div class="day-view" id="dayViewWrapper" style="display: none;">
+              <div class="day-view-header">
+                <h3 id="dayViewCurrentDate">Thứ Hai, 12 Tháng 10, 2026</h3>
+                <span class="day-task-count-badge" id="dayViewCountBadge">0 công việc</span>
+              </div>
+              <div class="day-schedule-list" id="dayScheduleList">
+                <!-- Events populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: TASKS LIST (DANH SÁCH CÔNG VIỆC)       -->
+        <!-- ============================================== -->
+        <section class="app-view" id="viewTasks">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 class="view-title">Quản Lý Công Việc & Lịch Trình</h1>
+              <p class="view-subtitle">Thêm, sửa, xóa, phân loại ưu tiên và đánh dấu hoàn thành</p>
+            </div>
+
+            <div class="task-action-bar">
+              <!-- Filter status -->
+              <div class="filter-pill-group">
+                <button class="filter-pill active" data-filter="all">Tất cả (<span id="countAll">0</span>)</button>
+                <button class="filter-pill" data-filter="pending">Chưa xong (<span id="countPending">0</span>)</button>
+                <button class="filter-pill" data-filter="completed">Đã xong (<span
+                    id="countCompleted">0</span>)</button>
+                <button class="filter-pill" data-filter="today">Hôm nay (<span id="countToday">0</span>)</button>
+              </div>
+
+              <!-- Sorting dropdown -->
+              <div class="sort-selector">
+                <label for="taskSortSelect"><i class="ph ph-sort-ascending"></i> Sắp xếp:</label>
+                <select id="taskSortSelect" class="form-select-sm">
+                  <option value="smart">Điểm ưu tiên thông minh ⚡</option>
+                  <option value="priority-desc">Mức độ ưu tiên (P1 -> P4)</option>
+                  <option value="date-asc">Hạn chót gần nhất</option>
+                  <option value="date-desc">Hạn chót xa nhất</option>
+                  <option value="name-asc">Tên công việc (A-Z)</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary btn-sm" id="btnAddTaskFromList">
+                <i class="ph-bold ph-plus"></i>
+                <span>Thêm công việc mới</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress summary bar for quick view -->
+          <div class="quick-progress-card">
+            <div class="progress-info-row">
+              <div class="progress-stat">
+                <span class="stat-number" id="quickCompletedRatio">0 / 0</span>
+                <span class="stat-desc">Hoàn thành</span>
+              </div>
+              <div class="progress-percent" id="quickPercent">0%</div>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="quickProgressBar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Tasks List Container -->
+          <div class="tasks-table-container">
+            <div class="tasks-list" id="tasksListContainer">
+              <!-- Rendered dynamically -->
+            </div>
+            <!-- Empty state -->
+            <div class="empty-state" id="tasksEmptyState" style="display: none;">
+              <i class="ph-duotone ph-clipboard-text"></i>
+              <h3>Chưa có công việc nào phù hợp</h3>
+              <p>Hãy tạo lịch trình mới hoặc thay đổi bộ lọc tìm kiếm của bạn.</p>
+              <button class="btn btn-primary btn-sm" id="emptyStateAddBtn">Thêm công việc ngay</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 3: SMART AI RECOMMENDATIONS (GỢI Ý ƯU TIÊN) -->
+        <!-- ============================================== -->
+        <section class="app-view" id="viewSmartAI">
+          <div class="view-header">
+            <div class="view-title-group">
+              <div class="badge-smart-label">
+                <i class="ph-fill ph-sparkle"></i> Thuật toán đề xuất & tối ưu
+              </div>
+              <h1 class="view-title">Gợi Ý Sắp Xếp Theo Mức Độ Ưu Tiên</h1>
+              <p class="view-subtitle">Hệ thống phân tích mức độ ưu tiên, hạn chót và thời gian còn lại để đưa ra thứ tự
+                thực hiện tối ưu nhất</p>
+            </div>
+
+            <div class="smart-header-actions">
+              <button class="btn btn-primary" id="btnApplySmartOrder">
+                <i class="ph-bold ph-arrows-down-up"></i>
+                <span>Áp dụng thứ tự đề xuất</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Smart Insights Banner -->
+          <div class="smart-insights-grid">
+            <div class="insight-card focus-card">
+              <div class="insight-icon">
+                <i class="ph-fill ph-target"></i>
+              </div>
+              <div class="insight-content">
+                <span class="insight-label">Ưu tiên số 1 hôm nay</span>
+                <h3 class="insight-value" id="topPriorityTaskTitle">Đang phân tích...</h3>
+                <p class="insight-desc" id="topPriorityTaskReason">Được chấm điểm cao nhất dựa trên hạn chót và mức độ
+                  khẩn cấp.</p>
+              </div>
+              <button class="btn btn-sm btn-outline-white" id="focusTopTaskBtn">Xem chi tiết</button>
+            </div>
+
+            <div class="insight-card urgency-card">
+              <div class="insight-icon">
+                <i class="ph-fill ph-warning-circle"></i>
+              </div>
+              <div class="insight-content">
+                <span class="insight-label">Cảnh báo khẩn cấp (< 24h)</span>
+                    <h3 class="insight-value" id="urgentTasksCount">0 công việc</h3>
+                    <p class="insight-desc">Các nhiệm vụ P1/P2 sắp đến hạn chót cần xử lý khẩn trương.</p>
+              </div>
+            </div>
+
+            <div class="insight-card efficiency-card">
+              <div class="insight-icon">
+                <i class="ph-fill ph-lightning"></i>
+              </div>
+              <div class="insight-content">
+                <span class="insight-label">Hiệu suất đề xuất</span>
+                <h3 class="insight-value" id="efficiencyScore">Rất tốt</h3>
+                <p class="insight-desc">Tuân thủ nguyên tắc "Ăn con ếch đó" - giải quyết việc quan trọng trước 12h trưa.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Explanation Formula -->
+          <div class="ai-formula-explanation">
+            <div class="formula-header">
+              <i class="ph-bold ph-info"></i>
+              <h4>Công thức tính điểm ưu tiên (Smart Priority Score):</h4>
+            </div>
+            <div class="formula-badges">
+              <span class="formula-chip">Điểm cơ bản (P1 = 100, P2 = 70, P3 = 40, P4 = 10)</span>
+              <span class="formula-math">+</span>
+              <span class="formula-chip">Hệ số gấp hạn chót (Càng gần hạn điểm càng cao)</span>
+              <span class="formula-math">+</span>
+              <span class="formula-chip">Trọng số danh mục quan trọng</span>
+            </div>
+          </div>
+
+          <!-- Ranked Smart List -->
+          <div class="smart-ranked-list">
+            <div class="ranked-list-header">
+              <h3>Thứ tự thực hiện khuyến nghị:</h3>
+              <span class="ranked-info-badge" id="smartRankedCount">0 nhiệm vụ được xếp hạng</span>
+            </div>
+            <div class="ranked-items" id="smartRankedContainer">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 4: EISENHOWER MATRIX (MA TRẬN 4 GÓC)      -->
+        <!-- ============================================== -->
+        <section class="app-view" id="viewEisenhower">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 class="view-title">Ma Trận Quản Trị Thời Gian Eisenhower</h1>
+              <p class="view-subtitle">Phương pháp phân loại công việc theo Khẩn cấp & Quan trọng được các nhà lãnh đạo
+                tin dùng</p>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btnHelpEisenhower">
+              <i class="ph ph-question"></i>
+              <span>Nguyên lý ma trận</span>
+            </button>
+          </div>
+
+          <div class="eisenhower-grid">
+            <!-- Q1: Khẩn cấp & Quan trọng (DO FIRST) -->
+            <div class="eisenhower-quadrant q1">
+              <div class="quadrant-header">
+                <div class="quadrant-badge p1-badge">P1: LÀM NGAY (Do First)</div>
+                <span class="quadrant-count" id="q1Count">0 việc</span>
+              </div>
+              <p class="quadrant-desc">Khẩn cấp & Quan trọng - Khủng hoảng, hạn chót gấp, vấn đề cấp bách.</p>
+              <div class="quadrant-list" id="q1List" data-quadrant="p1">
+                <!-- Items -->
+              </div>
+              <button class="quadrant-add-btn" data-priority="p1">
+                <i class="ph ph-plus"></i> Thêm việc vào mục này
+              </button>
+            </div>
+
+            <!-- Q2: Không khẩn cấp nhưng Quan trọng (SCHEDULE) -->
+            <div class="eisenhower-quadrant q2">
+              <div class="quadrant-header">
+                <div class="quadrant-badge p2-badge">P2: LÊN KẾ HOẠCH (Schedule)</div>
+                <span class="quadrant-count" id="q2Count">0 việc</span>
+              </div>
+              <p class="quadrant-desc">Quan trọng, Không khẩn cấp - Phát triển bản thân, kế hoạch dài hạn, rèn luyện.
+              </p>
+              <div class="quadrant-list" id="q2List" data-quadrant="p2">
+                <!-- Items -->
+              </div>
+              <button class="quadrant-add-btn" data-priority="p2">
+                <i class="ph ph-plus"></i> Thêm việc vào mục này
+              </button>
+            </div>
+
+            <!-- Q3: Khẩn cấp nhưng Không quan trọng (DELEGATE) -->
+            <div class="eisenhower-quadrant q3">
+              <div class="quadrant-header">
+                <div class="quadrant-badge p3-badge">P3: ỦY QUYỀN / LÀM NHANH (Delegate)</div>
+                <span class="quadrant-count" id="q3Count">0 việc</span>
+              </div>
+              <p class="quadrant-desc">Khẩn cấp, Ít quan trọng - Cuộc gọi gián đoạn, tin nhắn gấp nhưng việc phụ.</p>
+              <div class="quadrant-list" id="q3List" data-quadrant="p3">
+                <!-- Items -->
+              </div>
+              <button class="quadrant-add-btn" data-priority="p3">
+                <i class="ph ph-plus"></i> Thêm việc vào mục này
+              </button>
+            </div>
+
+            <!-- Q4: Không khẩn cấp & Không quan trọng (ELIMINATE) -->
+            <div class="eisenhower-quadrant q4">
+              <div class="quadrant-header">
+                <div class="quadrant-badge p4-badge">P4: HẠN CHẾ / BỎ QUA (Eliminate)</div>
+                <span class="quadrant-count" id="q4Count">0 việc</span>
+              </div>
+              <p class="quadrant-desc">Không khẩn cấp & Không quan trọng - Thói quen tiêu tốn thời gian, giải trí thừa
+                thãi.</p>
+              <div class="quadrant-list" id="q4List" data-quadrant="p4">
+                <!-- Items -->
+              </div>
+              <button class="quadrant-add-btn" data-priority="p4">
+                <i class="ph ph-plus"></i> Thêm việc vào mục này
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 5: ANALYTICS & PROGRESS (TIẾN ĐỘ & BÁO CÁO)-->
+        <!-- ============================================== -->
+        <section class="app-view" id="viewAnalytics">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 class="view-title">Theo Dõi Tiến Độ & Báo Cáo Hiệu Suất</h1>
+              <p class="view-subtitle">Thống kê tỷ lệ hoàn thành, phân bố mức độ ưu tiên và chỉ số năng suất cá nhân</p>
+            </div>
+            <div class="analytics-timeframe">
+              <span class="pill active">Tất cả thời gian</span>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon icon-blue">
+                <i class="ph-bold ph-calendar"></i>
+              </div>
+              <div class="kpi-data">
+                <span class="kpi-label">Tổng số công việc</span>
+                <h3 class="kpi-value" id="kpiTotalTasks">0</h3>
+                <span class="kpi-subtext">Được ghi nhận trên hệ thống</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-green">
+                <i class="ph-bold ph-check-circle"></i>
+              </div>
+              <div class="kpi-data">
+                <span class="kpi-label">Đã hoàn thành</span>
+                <h3 class="kpi-value" id="kpiCompletedTasks">0</h3>
+                <span class="kpi-subtext text-success" id="kpiCompletionRate">0% tỷ lệ hoàn thành</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-orange">
+                <i class="ph-bold ph-clock-countdown"></i>
+              </div>
+              <div class="kpi-data">
+                <span class="kpi-label">Đang chờ thực hiện</span>
+                <h3 class="kpi-value" id="kpiPendingTasks">0</h3>
+                <span class="kpi-subtext" id="kpiPendingUrgent">0 việc khẩn cấp (P1)</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-purple">
+                <i class="ph-bold ph-fire"></i>
+              </div>
+              <div class="kpi-data">
+                <span class="kpi-label">Chuỗi ngày kỷ luật</span>
+                <h3 class="kpi-value" id="kpiStreakDays">5 ngày</h3>
+                <span class="kpi-subtext">Giữ vững phong độ cao!</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="charts-row">
+            <!-- Progress by Priority Level -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Tiến độ theo Mức độ ưu tiên</h3>
+                <span class="chart-tag">P1 - P4</span>
+              </div>
+              <div class="priority-progress-bars" id="priorityProgressContainer">
+                <!-- Dynamically generated with progress bars -->
+              </div>
+            </div>
+
+            <!-- Distribution Chart (SVG Canvas) -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Tỷ lệ hoàn thành tổng thể</h3>
+                <span class="chart-tag">Dashboard</span>
+              </div>
+              <div class="radial-chart-container">
+                <svg class="radial-svg" viewBox="0 0 160 160">
+                  <circle class="radial-bg" cx="80" cy="80" r="65"></circle>
+                  <circle class="radial-stroke" id="radialProgressCircle" cx="80" cy="80" r="65"
+                    stroke-dasharray="408.4" stroke-dashoffset="408.4"></circle>
+                </svg>
+                <div class="radial-inner-label">
+                  <span class="radial-percent" id="radialPercentText">0%</span>
+                  <span class="radial-sub">Đã xong</span>
+                </div>
+              </div>
+              <div class="chart-legend" id="chartLegendContainer">
+                <!-- Dynamic categories breakdown -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Domain Comparison Progress (Lịch học vs Việc cá nhân) -->
+          <div class="domain-comparison-section">
+            <div class="section-title-sm">
+              <i class="ph-bold ph-chart-polar"></i>
+              <h3>So Sánh Tiến Độ: Lịch Học Tập vs Công Việc Cá Nhân</h3>
+            </div>
+            <div class="domain-comparison-grid" id="domainProgressComparison">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT EVENT OR TASK               -->
+  <!-- ============================================== -->
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="taskModalTitle">Thêm Lịch Trình / Công Việc</h3>
+        <button class="icon-btn modal-close-btn" id="closeTaskModalBtn">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <form id="taskForm" class="modal-form">
+        <input type="hidden" id="taskFormId" value="">
+
+        <!-- Domain Selector (Lịch học vs Việc cá nhân) -->
+        <div class="form-group">
+          <label class="form-label required">Phân loại hoạt động</label>
+          <div class="domain-form-selector">
+            <label class="domain-radio-card">
+              <input type="radio" name="taskDomainRadio" value="study">
+              <div class="domain-radio-inner study-card">
+                <i class="ph-bold ph-graduation-cap"></i>
+                <div class="domain-radio-text">
+                  <strong>🎓 Lịch Học Tập & Lớp Học</strong>
+                  <span>Môn học, giờ lên lớp, lịch thi, bài tập</span>
+                </div>
+              </div>
+            </label>
+            <label class="domain-radio-card">
+              <input type="radio" name="taskDomainRadio" value="personal_work" checked>
+              <div class="domain-radio-inner work-card">
+                <i class="ph-bold ph-briefcase"></i>
+                <div class="domain-radio-text">
+                  <strong>💼 Công Việc & Cá Nhân</strong>
+                  <span>Dự án, thói quen, tài chính, đời sống</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Contextual Study Fields (Shown when 'study' domain selected) -->
+        <div id="studyFieldsContainer" class="study-fields-panel" style="display: none;">
+          <div class="study-panel-header">
+            <i class="ph-bold ph-book-open"></i>
+            <span>Thông tin chi tiết môn học & lớp học</span>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studySubjectInput" class="form-label required">Tên môn học / Khóa học</label>
+              <input type="text" id="studySubjectInput" class="form-control" placeholder="Ví dụ: Lập trình Web, Cấu trúc Dữ liệu...">
+            </div>
+            <div class="form-group">
+              <label for="studyTypeSelect" class="form-label">Loại buổi học / Hoạt động</label>
+              <select id="studyTypeSelect" class="form-control">
+                <option value="lecture">📖 Lên lớp lý thuyết</option>
+                <option value="practice">🔬 Thực hành / Lab</option>
+                <option value="exam">📝 Kiểm tra / Lịch thi</option>
+                <option value="assignment">💻 Hạn nộp bài tập / Đồ án</option>
+                <option value="course">🎓 Khóa học ngoài / Tự học</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studyRoomInput" class="form-label">Phòng học / Link trực tuyến</label>
+              <input type="text" id="studyRoomInput" class="form-control" placeholder="Phòng Lab A302, Google Meet...">
+            </div>
+            <div class="form-group">
+              <label for="studyTeacherInput" class="form-label">Giảng viên / Người hướng dẫn</label>
+              <input type="text" id="studyTeacherInput" class="form-control" placeholder="ThS. Nguyễn Văn A...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+          <label for="taskTitleInput" class="form-label required" id="taskTitleLabel">Tiêu đề công việc / Sự kiện</label>
+          <input type="text" id="taskTitleInput" class="form-control" placeholder="Ví dụ: Họp báo cáo tiến độ quý 4..."
+            required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="taskDescInput" class="form-label">Mô tả / Ghi chú chi tiết</label>
+          <textarea id="taskDescInput" class="form-control" rows="3"
+            placeholder="Mục tiêu, chuẩn bị tài liệu, liên kết cần thiết..."></textarea>
+        </div>
+
+        <!-- Date & Time Row -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="taskDateInput" class="form-label required">Ngày thực hiện</label>
+            <input type="date" id="taskDateInput" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="taskTimeInput" class="form-label">Giờ thực hiện</label>
+            <input type="time" id="taskTimeInput" class="form-control" value="09:00">
+          </div>
+        </div>
+
+        <!-- End Date & Time (Optional) -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="taskEndDateInput" class="form-label">Hạn chót (Deadline)</label>
+            <input type="date" id="taskEndDateInput" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="taskEndTimeInput" class="form-label">Giờ kết thúc</label>
+            <input type="time" id="taskEndTimeInput" class="form-control" value="10:30">
+          </div>
+        </div>
+
+        <!-- Priority Selection (Important) -->
+        <div class="form-group">
+          <label class="form-label required">Mức độ ưu tiên</label>
+          <div class="priority-selector-grid">
+            <label class="priority-card-radio">
+              <input type="radio" name="priorityRadio" value="p1" checked>
+              <div class="priority-card-inner p1-theme">
+                <span class="p-dot p1-dot"></span>
+                <div class="p-info">
+                  <strong>P1 - Khẩn cấp & Quan trọng</strong>
+                  <span>Cần làm ngay lập tức</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="priority-card-radio">
+              <input type="radio" name="priorityRadio" value="p2">
+              <div class="priority-card-inner p2-theme">
+                <span class="p-dot p2-dot"></span>
+                <div class="p-info">
+                  <strong>P2 - Quan trọng, Không gấp</strong>
+                  <span>Lên lịch ưu tiên kế tiếp</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="priority-card-radio">
+              <input type="radio" name="priorityRadio" value="p3">
+              <div class="priority-card-inner p3-theme">
+                <span class="p-dot p3-dot"></span>
+                <div class="p-info">
+                  <strong>P3 - Bình thường</strong>
+                  <span>Có thể ủy quyền hoặc làm sau</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="priority-card-radio">
+              <input type="radio" name="priorityRadio" value="p4">
+              <div class="priority-card-inner p4-theme">
+                <span class="p-dot p4-dot"></span>
+                <div class="p-info">
+                  <strong>P4 - Thấp</strong>
+                  <span>Làm khi rảnh rỗi</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Category & Tags -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="taskCategorySelect" class="form-label">Danh mục</label>
+            <select id="taskCategorySelect" class="form-control">
+              <option value="work">💼 Công việc</option>
+              <option value="study">📚 Học tập</option>
+              <option value="personal">👤 Cá nhân</option>
+              <option value="health">🏃 Sức khỏe</option>
+              <option value="finance">💰 Tài chính</option>
+              <option value="family">🏠 Gia đình</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="taskTagsInput" class="form-label">Thẻ gắn (Tags, cách nhau dấu phẩy)</label>
+            <input type="text" id="taskTagsInput" class="form-control" placeholder="urgent, client, sprint...">
+          </div>
+        </div>
+
+        <!-- Reminder Setting Row -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="taskReminderSelect" class="form-label">
+              <i class="ph-bold ph-bell-ringing" style="color: var(--primary);"></i> Nhắc nhở khi đến hẹn
+            </label>
+            <select id="taskReminderSelect" class="form-control">
+              <option value="none">Không nhắc nhở</option>
+              <option value="ontime">Đúng giờ bắt đầu</option>
+              <option value="5m">Trước 5 phút</option>
+              <option value="15m" selected>Trước 15 phút</option>
+              <option value="30m">Trước 30 phút</option>
+              <option value="1h">Trước 1 giờ</option>
+              <option value="1d">Trước 1 ngày</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cơ chế cảnh báo</label>
+            <div class="reminder-hint-box">
+              <i class="ph-fill ph-speaker-high"></i>
+              <span>Chuông âm thanh + Hộp thoại tức thời</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completion Checkbox for Edit -->
+        <div class="form-group" id="formCompletedGroup" style="display: none;">
+          <label class="custom-checkbox-row">
+            <input type="checkbox" id="taskCompletedCheck">
+            <span class="check-box"></span>
+            <span class="check-label">Đánh dấu công việc đã hoàn thành</span>
+          </label>
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelTaskModal">Hủy bỏ</button>
+          <button type="button" class="btn btn-danger" id="btnDeleteTaskInModal" style="display: none;">
+            <i class="ph ph-trash"></i> Xóa
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnSaveTask">
+            <i class="ph-bold ph-check"></i>
+            <span>Lưu công việc</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: USER PROFILE MANAGEMENT (HỒ SƠ CÁ NHÂN)  -->
+  <!-- ============================================== -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3>Quản Lý Hồ Sơ Cá Nhân</h3>
+        <button class="icon-btn modal-close-btn" id="closeProfileModalBtn">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="profile-tabs">
+        <button class="profile-tab-btn active" data-tab="info">Thông tin chung</button>
+        <button class="profile-tab-btn" data-tab="security">Đổi mật khẩu</button>
+        <button class="profile-tab-btn" data-tab="stats">Thống kê tài khoản</button>
+      </div>
+
+      <!-- Tab 1: Info -->
+      <form id="profileInfoForm" class="profile-tab-content active" data-tab-content="info">
+        <div class="profile-avatar-picker">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" class="profile-avatar-large"
+            id="profilePreviewAvatar">
+          <div class="avatar-controls">
+            <h4>Ảnh đại diện</h4>
+            <p>Chọn phong cách Avatar ngẫu nhiên hoặc nhập seed tên của bạn:</p>
+            <div class="avatar-seed-row">
+              <input type="text" id="avatarSeedInput" class="form-control form-control-sm"
+                placeholder="Tên hoặc từ khóa avatar">
+              <button type="button" class="btn btn-secondary btn-sm" id="btnRandomAvatar">
+                <i class="ph ph-shuffle"></i> Ngẫu nhiên
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="profileFullName" class="form-label required">Họ và tên</label>
+            <input type="text" id="profileFullName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="profileEmail" class="form-label required">Địa chỉ Email</label>
+            <input type="email" id="profileEmail" class="form-control" required readonly>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="profileTitle" class="form-label">Chức danh / Nghề nghiệp</label>
+            <input type="text" id="profileTitle" class="form-control" placeholder="Kỹ sư phần mềm, Sinh viên...">
+          </div>
+          <div class="form-group">
+            <label for="profilePhone" class="form-label">Số điện thoại</label>
+            <input type="text" id="profilePhone" class="form-control" placeholder="0912 345 678">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profileBio" class="form-label">Giới thiệu ngắn (Bio)</label>
+          <textarea id="profileBio" class="form-control" rows="2"
+            placeholder="Tập trung vào mục tiêu và kỷ luật cá nhân..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelProfile">Đóng</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveProfile">Lưu thông tin</button>
+        </div>
+      </form>
+
+      <!-- Tab 2: Change Password -->
+      <form id="profilePasswordForm" class="profile-tab-content" data-tab-content="security" style="display: none;">
+        <div class="form-group">
+          <label for="oldPasswordInput" class="form-label required">Mật khẩu hiện tại</label>
+          <div class="password-input-wrap">
+            <input type="password" id="oldPasswordInput" class="form-control" required>
+            <button type="button" class="toggle-password-btn" data-target="oldPasswordInput"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newPasswordInput" class="form-label required">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+          <div class="password-input-wrap">
+            <input type="password" id="newPasswordInput" class="form-control" required minlength="6">
+            <button type="button" class="toggle-password-btn" data-target="newPasswordInput"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmNewPasswordInput" class="form-label required">Xác nhận mật khẩu mới</label>
+          <div class="password-input-wrap">
+            <input type="password" id="confirmNewPasswordInput" class="form-control" required minlength="6">
+            <button type="button" class="toggle-password-btn" data-target="confirmNewPasswordInput"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelPassword">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btnChangePassword">Đổi mật khẩu</button>
+        </div>
+      </form>
+
+      <!-- Tab 3: Account Stats -->
+      <div class="profile-tab-content" data-tab-content="stats" style="display: none;">
+        <div class="stats-overview-grid">
+          <div class="stat-box">
+            <span class="stat-label">Ngày gia nhập</span>
+            <strong id="profileJoinedDate">10/10/2026</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Tổng nhiệm vụ đã lập</span>
+            <strong id="profileTotalTasksCount">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Tổng nhiệm vụ đã hoàn thành</span>
+            <strong id="profileCompletedTasksCount">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Tỷ lệ thành công</span>
+            <strong id="profileSuccessRate" class="text-success">0%</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCloseProfileStats">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: AUTHENTICATION (LOGIN & REGISTER)       -->
+  <!-- ============================================== -->
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-box modal-sm auth-modal-box">
+      <div class="modal-header">
+        <div class="auth-header-logo">
+          <div class="logo-icon-sm">
+            <i class="ph-bold ph-calendar-check"></i>
+          </div>
+          <h3 id="authModalTitle">Đăng Nhập PlanSmart</h3>
+        </div>
+        <button class="icon-btn modal-close-btn" id="closeAuthModalBtn">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="auth-nav-tabs">
+        <button class="auth-tab-btn active" id="authTabLogin">Đăng nhập</button>
+        <button class="auth-tab-btn" id="authTabRegister">Đăng ký tài khoản</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form-body">
+        <div class="form-group">
+          <label for="loginEmail" class="form-label required">Email</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" required
+            value="demo@plansmart.vn">
+        </div>
+
+        <div class="form-group">
+          <div class="label-with-link">
+            <label for="loginPassword" class="form-label required">Mật khẩu</label>
+          </div>
+          <div class="password-input-wrap">
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required
+              value="123456">
+            <button type="button" class="toggle-password-btn" data-target="loginPassword"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="btnSubmitLogin">
+          <span>Đăng nhập ngay</span>
+        </button>
+
+        <div class="auth-divider">
+          <span>hoặc</span>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-block" id="btnQuickDemoLogin">
+          <i class="ph-bold ph-sparkle"></i>
+          <span>Đăng nhập nhanh với tài khoản Demo</span>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form-body" style="display: none;">
+        <div class="form-group">
+          <label for="regFullName" class="form-label required">Họ và tên</label>
+          <input type="text" id="regFullName" class="form-control" placeholder="Nguyễn Văn A" required>
+        </div>
+
+        <div class="form-group">
+          <label for="regEmail" class="form-label required">Địa chỉ Email</label>
+          <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="regPassword" class="form-label required">Mật khẩu (tối thiểu 6 ký tự)</label>
+          <div class="password-input-wrap">
+            <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required minlength="6">
+            <button type="button" class="toggle-password-btn" data-target="regPassword"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regConfirmPassword" class="form-label required">Nhập lại mật khẩu</label>
+          <div class="password-input-wrap">
+            <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••" required
+              minlength="6">
+            <button type="button" class="toggle-password-btn" data-target="regConfirmPassword"><i
+                class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="btnSubmitRegister">
+          <span>Tạo tài khoản mới</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ACTIVE REMINDER ALARM (CHUÔNG BÁO ĐẾN HẸN) -->
+  <!-- ============================================== -->
+  <div class="modal-backdrop reminder-alert-backdrop" id="reminderAlertModal">
+    <div class="modal-box modal-sm reminder-alarm-card">
+      <div class="alarm-header">
+        <div class="alarm-bell-icon pulse-alarm">
+          <i class="ph-fill ph-bell-ringing"></i>
+        </div>
+        <div class="alarm-title-group">
+          <span class="alarm-badge">ĐẾN HẸN CÔNG VIỆC!</span>
+          <span class="alarm-reminder-offset" id="alertReminderLabel">Đúng giờ</span>
+        </div>
+        <button class="icon-btn modal-close-btn" id="closeAlertModalBtn">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="alarm-body">
+        <div class="alarm-task-header">
+          <span class="badge-priority p1" id="alertTaskPriority">P1: Làm ngay</span>
+          <h3 class="alarm-task-title" id="alertTaskTitle">Tên công việc</h3>
+        </div>
+
+        <div class="alarm-time-row">
+          <i class="ph-bold ph-clock"></i>
+          <span id="alertTaskTime">09:30 - 12/10/2026</span>
+        </div>
+
+        <p class="alarm-desc" id="alertTaskDesc">Ghi chú chi tiết công việc...</p>
+      </div>
+
+      <div class="alarm-actions">
+        <button class="btn btn-success btn-block" id="btnAlertCompleteTask">
+          <i class="ph-bold ph-check-circle"></i>
+          <span>Hoàn thành ngay</span>
+        </button>
+        <div class="alarm-secondary-actions">
+          <button class="btn btn-secondary btn-block" id="btnAlertSnoozeTask">
+            <i class="ph-bold ph-alarm"></i>
+            <span>Báo lại sau 5 phút</span>
+          </button>
+          <button class="btn btn-outline" id="btnAlertDismiss">
+            <span>Bỏ qua</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/reminder.js"></script>
+  <script src="js/smart-scheduler.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
